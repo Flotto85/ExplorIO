@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D8292A24-6EDA-4933-9B72-9F7BB7C3FEB1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ExplorIO.UI</RootNamespace>
+    <AssemblyName>ExplorIO.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DeviceDetailsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DeviceDetailsControl.Designer.cs">
+      <DependentUpon>DeviceDetailsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DevicesTreeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DevicesTreeControl.Designer.cs">
+      <DependentUpon>DevicesTreeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IoByteControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IoByteControl.Designer.cs">
+      <DependentUpon>IoByteControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IoByteControl2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IoByteControl2.Designer.cs">
+      <DependentUpon>IoByteControl2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IoDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IoDataControl.Designer.cs">
+      <DependentUpon>IoDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IoDescDetailsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IoDescDetailsControl.Designer.cs">
+      <DependentUpon>IoDescDetailsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IoDescEditorControl2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IoDescEditorControl2.Designer.cs">
+      <DependentUpon>IoDescEditorControl2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IoDescEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IoDescEditorControl.Designer.cs">
+      <DependentUpon>IoDescEditorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectDetailsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProjectDetailsControl.Designer.cs">
+      <DependentUpon>ProjectDetailsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DeviceDetailsControl.resx">
+      <DependentUpon>DeviceDetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DevicesTreeControl.resx">
+      <DependentUpon>DevicesTreeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IoByteControl.resx">
+      <DependentUpon>IoByteControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IoDataControl.resx">
+      <DependentUpon>IoDataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IoDescDetailsControl.resx">
+      <DependentUpon>IoDescDetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IoDescEditorControl2.resx">
+      <DependentUpon>IoDescEditorControl2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IoDescEditorControl.resx">
+      <DependentUpon>IoDescEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectDetailsControl.resx">
+      <DependentUpon>ProjectDetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExplorIO.Data\ExplorIO.Data.csproj">
+      <Project>{9B1D69FF-169E-4CCE-88A0-12A736F9D4A4}</Project>
+      <Name>ExplorIO.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
