@@ -8,20 +8,33 @@ using System.Text;
 using System.Windows.Forms;
 using ExplorIO.Data;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace ExplorIO.UI {
-    public partial class IoDescEditorControl2 : UserControl {
-        private int byteHeight = 70;
-        private List<ItemRectContainer> itemRects;
+    public partial class IoDescEditorControl2 : UserControl
+    {
+        #region Constant Fields
+        const int byteHeight = 70;
+        const int byteWidth = 770;
+        const int horizontalSpacerSize = 5;
+        const int vericalSpacerSize = 5;
+        const int scrollDivisor = 10;
+        #endregion
+
+        #region Fields and Properties
+        Color unusedByteColor = SystemColors.ActiveCaption;
+        Color usedByteColor = Color.LightSalmon;
+
+        private SortedList<int, ItemRectContainer> itemRects;
+        private List<ItemRectContainer> selectedItemRects;
         private IoDescription ioDesc;
         private Bitmap bmp;
         private Graphics g;
-        private int virtHeight;
-        private int scrollDivisor = 10;
+        private int virtHeight;        
         int lastHeight = 0;
-        int selectedItemIndex;
         bool mouseDown;
-        Point mouseDownPos;
+        bool ctrlPressed;
+        object syncLock = new object();
 
         public IoDescription IoDesc {
             get { return ioDesc; }
@@ -32,69 +45,81 @@ namespace ExplorIO.UI {
                     return;
                 ioDesc = value;
 
-                this.itemRects.Clear();
-                for (int i = 0; i < ioDesc.Size; i++) {
-                    Rectangle rect = new Rectangle(0, i * (byteHeight + 5), this.Width, byteHeight);
-                    ItemRectContainer rectContainer = new ItemRectContainer();
-                    rectContainer.ItemRect = rect;
-                    rectContainer.Color = SystemColors.ActiveCaption;
-                    this.itemRects.Add(rectContainer);
-                }
-                this.virtHeight = (int)((ioDesc.Size) * (byteHeight + 5));
+                this.itemRects = CreateItemRectangles(ioDesc);
+                this.virtHeight = (int)((ioDesc.Size) * (byteHeight + horizontalSpacerSize));
                 CreateIoDescBitmap();
                 this.Invalidate();
             }
         }
+        #endregion
 
-        void vScrollBar_ValueChanged(object sender, EventArgs e) {
-            this.Invalidate();
-        }
-
+        #region Initialization
         public IoDescEditorControl2() {
             InitializeComponent();
+            SetStyle(ControlStyles.UserPaint, true);
 
-            this.itemRects = new List<ItemRectContainer>();
+            this.itemRects = new SortedList<int, ItemRectContainer>();
+            this.selectedItemRects = new List<ItemRectContainer>();
             this.DoubleBuffered = true;
             this.virtHeight = 1;
 
-            this.selectedItemIndex = -1;
-            bool mouseDown = false;
+            this.mouseDown = false;
+            this.ctrlPressed = false;
 
             this.MouseDown += new MouseEventHandler(IoDescEditor2_MouseDown);
             this.MouseUp += new MouseEventHandler(IoDescEditorControl2_MouseUp);
             this.MouseMove += new MouseEventHandler(IoDescEditorControl2_MouseMove);
             this.MouseLeave += new EventHandler(IoDescEditorControl2_MouseLeave);
-            this.KeyPress += new KeyPressEventHandler(IoDescEditorControl2_KeyPress);
+            this.MouseClick += new MouseEventHandler(IoDescEditorControl2_MouseClick);
+
+            this.KeyDown += new KeyEventHandler(IoDescEditorControl2_KeyDown);
+            this.KeyUp += new KeyEventHandler(IoDescEditorControl2_KeyUp);
+            this.LostFocus += new EventHandler(IoDescEditorControl2_LostFocus);
+
             this.vScrollBar.ValueChanged += new EventHandler(vScrollBar_ValueChanged);
         }
+        #endregion
 
-        void IoDescEditorControl2_KeyPress(object sender, KeyPressEventArgs e)
+        #region Event Handler
+        private void IoDescEditorControl2_KeyDown(object sender, KeyEventArgs e)
         {
-            if (this.selectedItemIndex >= 0)
+            switch (e.KeyValue)
             {
-                if (e.KeyChar == 's')
-                {
-                    this.selectedItemIndex++;
-                }
-                if (e.KeyChar == 'w')
-                {
-                    this.selectedItemIndex--;
-                }
-                if (this.selectedItemIndex < 0)
-                    this.selectedItemIndex = 0;
-                if (this.selectedItemIndex > this.itemRects.Count - 1)
-                    this.selectedItemIndex = this.itemRects.Count - 1;
-                this.CreateIoDescBitmap();
-                this.Invalidate();
+                case (17): // Ctrl
+                    this.ctrlPressed = true;
+                    break;
+                case 107: // Plus
+                    this.AddSelectedToIoDesc();
+                    break;
+                case 109: // Minus
+                    this.RemoveSelectedFromIoDec();
+                    break;
             }
         }
 
-        void IoDescEditorControl2_MouseLeave(object sender, EventArgs e)
+        private void IoDescEditorControl2_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == 17)
+                this.ctrlPressed = false;
+        }
+
+        private void IoDescEditorControl2_LostFocus(object sender, EventArgs e)
+        {
+            this.ctrlPressed = false;
+            this.mouseDown = false;
+        }
+
+        private void vScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            this.Invalidate();
+        }
+
+        private void IoDescEditorControl2_MouseLeave(object sender, EventArgs e)
         {
             mouseDown = false;
         }
 
-        void IoDescEditorControl2_MouseMove(object sender, MouseEventArgs e)
+        private void IoDescEditorControl2_MouseMove(object sender, MouseEventArgs e)
         {
             if (mouseDown)
             {
@@ -103,60 +128,167 @@ namespace ExplorIO.UI {
             }
         }
 
-        void IoDescEditorControl2_MouseUp(object sender, MouseEventArgs e)
+        private void IoDescEditorControl2_MouseUp(object sender, MouseEventArgs e)
         {
             mouseDown = false;
             CreateIoDescBitmap();
             this.Invalidate();
         }
 
-        void IoDescEditor2_MouseDown(object sender, MouseEventArgs e) {
-            if (this.itemRects == null || this.itemRects.Count == 0) {
+        private void IoDescEditor2_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (this.itemRects.Count == 0)
                 return;
+            int worldMousePos = (e.Y + vScrollBar.Value * scrollDivisor);
+            ItemRectContainer clickedRect = null;
+            for (int i = worldMousePos; i >= 0; i--)
+            {
+                if (itemRects.ContainsKey(i))
+                {
+                    if (itemRects[i].ItemRect.Bottom > worldMousePos &&
+                        e.X >= itemRects[i].ItemRect.Left &&
+                        e.X <= itemRects[i].ItemRect.Right)
+                        clickedRect = itemRects[i];
+                    break;
+                }
             }
-            int index = ((e.Y + vScrollBar.Value * scrollDivisor) / (byteHeight + 5));
-            if (index > itemRects.Count-1){
-                selectedItemIndex = -1;
-                return;            
+            if (clickedRect == null && this.selectedItemRects.Count == 1)
+                return;
+            if (!this.ctrlPressed)
+            {
+                this.selectedItemRects.Clear();
+                this.selectedItemRects.Add(clickedRect);
             }
-            mouseDown = true;
-            this.selectedItemIndex = index;
-            this.mouseDownPos = new Point(e.X, e.Y);
+            else if (this.selectedItemRects.Contains(clickedRect))
+                this.selectedItemRects.Remove(clickedRect);
+            else
+                this.selectedItemRects.Add(clickedRect);
             CreateIoDescBitmap();
             this.Invalidate();
         }
 
-        private void CreateIoDescBitmap(int mouseX, int mouseY)
+        private void IoDescEditorControl2_MouseClick(object sender, MouseEventArgs e)
         {
-            if (itemRects == null || itemRects.Count == 0)
-                return;
 
-            if (bmp != null)
-                bmp.Dispose();
-            bmp = new Bitmap(this.Width, this.virtHeight);
+        }
+        #endregion
 
-            g = Graphics.FromImage(bmp);
-            SolidBrush brush = new SolidBrush(SystemColors.ActiveCaption);
-            for (int i = 0; i < this.itemRects.Count; i++) {
-                if (i==selectedItemIndex)
-                    brush = new SolidBrush(SystemColors.ControlDark);
-                else
-                    brush = new SolidBrush(itemRects[i].Color);
-                Rectangle rect = itemRects[i].ItemRect;
-                if (i == this.selectedItemIndex && mouseDown)
+        #region Tools
+        private void RePaintControl(bool reCreateItemRects)
+        {
+            //Thread t = new Thread(new ThreadStart(delegate()
+            //{
+                if (reCreateItemRects)
                 {
-                    //rect.X += mouseX - this.mouseDownPos.X;
-                    //rect.Y -= this.mouseDownPos.Y - mouseY;
+                    this.itemRects = this.CreateItemRectangles(this.ioDesc);
+                    
                 }
-                g.FillRectangle(brush, rect);
-                g.DrawString(i.ToString(), this.Font, Brushes.Black, new Point(rect.X, rect.Y));
-            }
-            g.Flush();
-            g.Dispose();
+                this.CreateIoDescBitmap();
+                this.Invalidate();
+                this.Update();
+            //}));
         }
 
-        private void CreateIoDescBitmap() {
-            CreateIoDescBitmap(0, 0);
+        private void AddSelectedToIoDesc()
+        {
+            if (this.selectedItemRects.Count == 0)
+                return;
+            foreach (ItemRectContainer itemRect in this.selectedItemRects)
+            {
+                if (itemRect.Item != null)
+                    return;
+            }
+
+            IoDescriptionItem item = new IoGroup(selectedItemRects.Count, selectedItemRects[0].Address);
+            this.ioDesc.AddItem(item);
+            this.selectedItemRects.Clear();
+            this.itemRects = CreateItemRectangles(ioDesc);
+            this.CreateIoDescBitmap();
+            this.Invalidate();
+        }
+
+        private void RemoveSelectedFromIoDec()
+        {
+            if (this.selectedItemRects.Count == 0)
+                return;
+            foreach (ItemRectContainer item in selectedItemRects)
+            {
+                this.ioDesc.RemoveItem(item.Item);
+            }
+            RePaintControl(true);
+        }
+
+
+        private SortedList<int, ItemRectContainer> CreateItemRectangles(IoDescription ioDesc)
+        {
+            lock (syncLock)
+            {
+                SortedList<int, ItemRectContainer> rectList = new SortedList<int, ItemRectContainer>();
+                ItemRectContainer rectContainer;
+                int size;
+
+                if (ioDesc == null || ioDesc.Size <= 0)
+                    return rectList;
+
+                for (int address = 0, index = 0; address < ioDesc.Size; address++, index++)
+                {
+                    IoDescriptionItem item = ioDesc.GetItemAtAddress(address);
+                    if (item == null)
+                        size = 1;
+                    else
+                        size = item.Size;
+
+                    Rectangle rect = new Rectangle(
+                        vericalSpacerSize,
+                        (address * byteHeight) + (index * horizontalSpacerSize) + horizontalSpacerSize,
+                        byteWidth,
+                        byteHeight * size);
+
+                    rectContainer = new ItemRectContainer();
+                    rectContainer.Item = item;
+                    rectContainer.ItemRect = rect;
+                    rectContainer.Index = index;
+                    rectContainer.Address = address;
+
+                    rectList.Add(rect.Top, rectContainer);
+                    address += (size - 1);
+                }
+                return rectList;
+            }
+        }
+
+        private void CreateIoDescBitmap()
+        {
+            lock (syncLock)
+            {
+                if (itemRects == null || itemRects.Count == 0)
+                    return;
+
+                if (bmp != null)
+                    bmp.Dispose();
+                bmp = new Bitmap(this.Width, this.virtHeight);
+
+                g = Graphics.FromImage(bmp);
+                SolidBrush brush;
+                Color color;
+                for (int i = 0; i < this.itemRects.Count; i++)
+                {
+                    if (itemRects.Values[i].Item == null)
+                        color = unusedByteColor;
+                    else
+                        color = usedByteColor;
+                    if (this.selectedItemRects.Contains(itemRects.Values[i]))
+                        color = ControlPaint.Dark(color);
+                    brush = new SolidBrush(color);
+
+                    Rectangle rect = itemRects.Values[i].ItemRect;
+
+                    g.FillRectangle(brush, rect);
+                    g.DrawString(itemRects.Values[i].Address.ToString(), this.Font, new SolidBrush(this.ForeColor), new Point(rect.X, rect.Y));
+                }
+                g.Flush();
+                g.Dispose();
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e) {
@@ -171,7 +303,7 @@ namespace ExplorIO.UI {
                     this.vScrollBar.Visible = true;
                     this.vScrollBar.Maximum = ((this.virtHeight - this.Height + byteHeight + 35) / scrollDivisor);
                 }
-                CreateIoDescBitmap();
+                //CreateIoDescBitmap();
             }
 
             int yOffset = this.vScrollBar.Value * scrollDivisor;
@@ -184,12 +316,14 @@ namespace ExplorIO.UI {
             e.Graphics.DrawImage(tmpBitMap, new Point(0, 0));
             tmpBitMap.Dispose();
         }
+        #endregion
     }
 
-    public class ItemRectContainer
+    internal class ItemRectContainer
     {
         public Rectangle ItemRect { get; set; }
-        public Color Color { get; set; }
+        public IoDescriptionItem Item { get; set; }
+        public int Address { get; set; }
+        public int Index { get; set; }
     }
-
 }

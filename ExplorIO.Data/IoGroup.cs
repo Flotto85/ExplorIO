@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace ExplorIO.Data
 {
+    [DataContract]
     public class IoGroup : IoDescriptionItem
     {
         #region Fields and Properties
@@ -17,13 +19,15 @@ namespace ExplorIO.Data
         #endregion
 
         #region Initialization
-        public IoGroup()
+        public IoGroup(int address)
         {
             this.size = 1;
+            this.Address = address;
         }
 
-        public IoGroup(int size)
+        public IoGroup(int size, int address)
         {
+            this.Address = address;
             this.size = size;
         }
         #endregion

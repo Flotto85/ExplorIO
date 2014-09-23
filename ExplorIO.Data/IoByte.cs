@@ -10,6 +10,7 @@ namespace ExplorIO.Data
         #region Fields and Properties
         private IoBit[] bits;
 
+
         public IoBit[] Bits
         {
             get { return (IoBit[])this.bits.Clone(); }

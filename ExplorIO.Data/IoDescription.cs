@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace ExplorIO.Data
 {
-   [DataContract(IsReference=true)]
+    [DataContract(IsReference=true)]
     public class IoDescription : INotifyPropertyChanged
     {
         #region Fields and Properties
@@ -18,13 +18,18 @@ namespace ExplorIO.Data
         private uint outputStartAddress;
         private uint size;
 
-        private List<IoDescriptionItem> items;
+        private SortedList<int, IoDescriptionItem> items;
 
         [DataMember]
         public IoDescriptionItem[] Items
         {
-            get { return items.ToArray(); }
-            protected set { this.items = new List<IoDescriptionItem>(value); }
+            get { return items.Values.ToArray(); }
+            protected set { 
+                this.items = new SortedList<int, IoDescriptionItem>(); 
+                foreach (IoDescriptionItem item in value){
+                    this.items.Add(item.Address, item);
+                }
+            }
         }
 
         [DataMember]
@@ -92,7 +97,7 @@ namespace ExplorIO.Data
 
         protected IoDescription()
         {
-            this.items = new List<IoDescriptionItem>();
+            this.items = new SortedList<int, IoDescriptionItem>();
         }
         #endregion
 
@@ -125,13 +130,13 @@ namespace ExplorIO.Data
             this.PerformPropertyChanged("OutputDevice");
         }
 
-        public void AddItem(int address, IoDescriptionItem item)
+        public void AddItem(IoDescriptionItem item)
         {
-            if (address < 0 || address > (this.size - 1))
+            if (item.Address < 0 || item.Address > (this.size - 1))
                 throw new ArgumentOutOfRangeException("address");
             if (item == null)
                 throw new ArgumentNullException("item");
-            int start = address;
+            int start = item.Address;
             int end = start + item.Size;
             //foreach (int itemAddress in this.items.Keys)
             //{
@@ -142,7 +147,31 @@ namespace ExplorIO.Data
             //        throw new InvalidOperationException("Address areas intersect");
             // }
 
-            this.items.Add(item);
+            this.items.Add(item.Address, item);
+        }
+
+        public void RemoveItem(IoDescriptionItem item)
+        {
+            if (this.items.ContainsKey(item.Address))
+                this.items.Remove(item.Address);
+        }
+
+        public IoDescriptionItem GetItemAtAddress(int address)
+        {
+            IoDescriptionItem item = null;
+            for (int i = address; i >= 0; i--)
+            {
+                if (this.items.ContainsKey(i))
+                {
+                    if (address == this.items[i].Address ||
+                        address < (this.items[i].Address + this.items[i].Size))
+                    {
+                        item = items[i];
+                    }
+                    break;
+                }
+            }
+            return item;
         }
 
         internal void ReInitDevices()

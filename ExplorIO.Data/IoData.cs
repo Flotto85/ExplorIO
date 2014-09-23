@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace ExplorIO.Data
 {
+    [DataContract]
     public abstract class IoData
     {
         #region Fields and Properties
