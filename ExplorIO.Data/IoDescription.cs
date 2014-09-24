@@ -138,22 +138,47 @@ namespace ExplorIO.Data
                 throw new ArgumentNullException("item");
             int start = item.Address;
             int end = start + item.Size;
-            //foreach (int itemAddress in this.items.Keys)
-            //{
-            //    int from = itemAddress;
-            //    int to = this.items[itemAddress].Size + from;
-
-            //    if ((start > from && start < to) || (end > from && end < to) || (start < from && end > to))
-            //        throw new InvalidOperationException("Address areas intersect");
-            // }
 
             this.items.Add(item.Address, item);
+            this.PerformPropertyChanged("Items");
         }
 
         public void RemoveItem(IoDescriptionItem item)
         {
             if (this.items.ContainsKey(item.Address))
+            {
                 this.items.Remove(item.Address);
+                this.PerformPropertyChanged("Items");
+            }
+        }
+
+        public void MoveItem(IoDescriptionItem item, int newAddress)
+        {
+            if (!items.ContainsKey(item.Address))
+                throw new ArgumentException("The item is not part of the description", "item");
+            if (newAddress < 0)
+                throw new ArgumentException("Address can not be smaller than 0", "address");
+            if (newAddress + item.Size > this.Size)            
+                throw new ArgumentException("Address plus item size is larger than description size", "address");
+            if (item.Address == newAddress)
+                return;
+
+            IoDescriptionItem nextItem = items.FirstOrDefault(x => x.Key >= newAddress && x.Key != item.Address).Value;
+            if (items.ContainsKey(newAddress) || (nextItem != null && nextItem.Address <= (newAddress + (item.Size - 1))))
+            {
+                throw new InvalidOperationException("Destination of item is not empty");
+            }
+            IoDescriptionItem itemBefore = items.LastOrDefault(x => x.Key <= newAddress && x.Key != item.Address).Value;
+            if ((itemBefore != null && (itemBefore.Address + (itemBefore.Size - 1) >= newAddress)))
+            {
+                throw new InvalidOperationException("Destination of item is not empty");
+            }
+
+            items.Remove(item.Address);
+            item.Address = newAddress;
+            items.Add(item.Address, item);
+
+            this.PerformPropertyChanged("Items");
         }
 
         public IoDescriptionItem GetItemAtAddress(int address)
