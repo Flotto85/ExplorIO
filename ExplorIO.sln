@@ -6,14 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplorIO", "ExplorIO\Explor
 		{9B1D69FF-169E-4CCE-88A0-12A736F9D4A4} = {9B1D69FF-169E-4CCE-88A0-12A736F9D4A4}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplorIO.Core", "ExplorIO.Core\ExplorIO.Core.csproj", "{C1944B34-3D52-43E3-88BD-2F8FB80496FB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplorIO.Data", "ExplorIO.Data\ExplorIO.Data.csproj", "{9B1D69FF-169E-4CCE-88A0-12A736F9D4A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplorIO.UI", "ExplorIO.UI\ExplorIO.UI.csproj", "{D8292A24-6EDA-4933-9B72-9F7BB7C3FEB1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB} = {C1944B34-3D52-43E3-88BD-2F8FB80496FB}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,16 +30,6 @@ Global
 		{15C46963-C4B6-4D7A-828F-186693F6BA68}.Release|Mixed Platforms.Build.0 = Release|x86
 		{15C46963-C4B6-4D7A-828F-186693F6BA68}.Release|x86.ActiveCfg = Release|x86
 		{15C46963-C4B6-4D7A-828F-186693F6BA68}.Release|x86.Build.0 = Release|x86
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C1944B34-3D52-43E3-88BD-2F8FB80496FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{9B1D69FF-169E-4CCE-88A0-12A736F9D4A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B1D69FF-169E-4CCE-88A0-12A736F9D4A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B1D69FF-169E-4CCE-88A0-12A736F9D4A4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

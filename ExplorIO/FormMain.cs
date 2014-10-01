@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using ExplorIO.Data;
+using ExplorIO.UI.Presenters;
 
 namespace ExplorIO
 {
@@ -18,6 +19,7 @@ namespace ExplorIO
         FormManageDevices frmDevices;
         FormNewIoDescription frmNewIoDesc;
         Project openProject;
+        InterfaceDescriptionEditorPresenter descriptionEditorPresenter;
 
         public Project OpenedProject
         {
@@ -46,6 +48,8 @@ namespace ExplorIO
             this.projektSpeichernToolStripMenuItem.Enabled = false;
             this.projektToolStripMenuItem.Enabled = false;
 
+            this.descriptionEditorPresenter = new InterfaceDescriptionEditorPresenter(this.interfaceDescriptionEditorView1);
+
             this.neuesProjektToolStripMenuItem.Click += new EventHandler(neuesProjektToolStripMenuItem_Click);
             this.projektLadenToolStripMenuItem.Click += new EventHandler(projektLadenToolStripMenuItem_Click);
             this.projektSpeichernToolStripMenuItem.Click += new EventHandler(projektSpeichernToolStripMenuItem_Click);
@@ -60,7 +64,7 @@ namespace ExplorIO
             if (e.Node.Tag is IoDescription)
             {
                 IoDescription desc = e.Node.Tag as IoDescription;
-                this.ioDescEditorControl1.IoDesc = desc;
+                this.descriptionEditorPresenter.InterfaceDescription = desc;
             }
         }
         #endregion

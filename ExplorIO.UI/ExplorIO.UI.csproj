@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\TileGridControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TileGridControl.Designer.cs">
+      <DependentUpon>TileGridControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="DeviceDetailsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -53,12 +59,6 @@
     </Compile>
     <Compile Include="DevicesTreeControl.Designer.cs">
       <DependentUpon>DevicesTreeControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IoByteControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IoByteControl.Designer.cs">
-      <DependentUpon>IoByteControl.cs</DependentUpon>
     </Compile>
     <Compile Include="IoByteControl2.cs">
       <SubType>UserControl</SubType>
@@ -84,12 +84,8 @@
     <Compile Include="IoDescEditorControl2.Designer.cs">
       <DependentUpon>IoDescEditorControl2.cs</DependentUpon>
     </Compile>
-    <Compile Include="IoDescEditorControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IoDescEditorControl.Designer.cs">
-      <DependentUpon>IoDescEditorControl.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Presenters\InterfaceDescriptionEditorPresenter.cs" />
+    <Compile Include="Presenters\Presenter.cs" />
     <Compile Include="ProjectDetailsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -97,16 +93,24 @@
       <DependentUpon>ProjectDetailsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="Views\IInterfaceDescriptionEditorView.cs" />
+    <Compile Include="Views\InterfaceDescriptionEditorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\InterfaceDescriptionEditorView.Designer.cs">
+      <DependentUpon>InterfaceDescriptionEditorView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\TileGridControl.resx">
+      <DependentUpon>TileGridControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DeviceDetailsControl.resx">
       <DependentUpon>DeviceDetailsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DevicesTreeControl.resx">
       <DependentUpon>DevicesTreeControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="IoByteControl.resx">
-      <DependentUpon>IoByteControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="IoDataControl.resx">
       <DependentUpon>IoDataControl.cs</DependentUpon>
@@ -117,11 +121,11 @@
     <EmbeddedResource Include="IoDescEditorControl2.resx">
       <DependentUpon>IoDescEditorControl2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IoDescEditorControl.resx">
-      <DependentUpon>IoDescEditorControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ProjectDetailsControl.resx">
       <DependentUpon>ProjectDetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\InterfaceDescriptionEditorView.resx">
+      <DependentUpon>InterfaceDescriptionEditorView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +134,7 @@
       <Name>ExplorIO.Data</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -42,10 +42,11 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.eigenschaftenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.deviceTreeControl = new ExplorIO.UI.DevicesTreeControl();
             this.ioDescEditorControl1 = new ExplorIO.UI.IoDescEditorControl2();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.interfaceDescriptionEditorView1 = new ExplorIO.UI.Views.InterfaceDescriptionEditorView();
             this.menuStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -162,22 +163,12 @@
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.Controls.Add(this.interfaceDescriptionEditorView1);
             this.splitContainer.Panel2.Controls.Add(this.ioDescEditorControl1);
             this.splitContainer.Size = new System.Drawing.Size(1291, 573);
             this.splitContainer.SplitterDistance = 213;
             this.splitContainer.SplitterWidth = 8;
             this.splitContainer.TabIndex = 2;
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.DefaultExt = "iox";
-            this.openFileDialog.FileName = "default";
-            this.openFileDialog.Filter = "Schnittstellendateien (*.iox)|*.iox";
-            // 
-            // saveFileDialog
-            // 
-            this.saveFileDialog.DefaultExt = "iox";
-            this.saveFileDialog.Filter = "Schnittstellendateien (*.iox)|*.iox";
             // 
             // deviceTreeControl
             // 
@@ -199,6 +190,25 @@
             this.ioDescEditorControl1.Name = "ioDescEditorControl1";
             this.ioDescEditorControl1.Size = new System.Drawing.Size(1068, 571);
             this.ioDescEditorControl1.TabIndex = 0;
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.DefaultExt = "iox";
+            this.openFileDialog.FileName = "default";
+            this.openFileDialog.Filter = "Schnittstellendateien (*.iox)|*.iox";
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.DefaultExt = "iox";
+            this.saveFileDialog.Filter = "Schnittstellendateien (*.iox)|*.iox";
+            // 
+            // interfaceDescriptionEditorView1
+            // 
+            this.interfaceDescriptionEditorView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interfaceDescriptionEditorView1.Location = new System.Drawing.Point(0, 0);
+            this.interfaceDescriptionEditorView1.Name = "interfaceDescriptionEditorView1";
+            this.interfaceDescriptionEditorView1.Size = new System.Drawing.Size(1068, 571);
+            this.interfaceDescriptionEditorView1.TabIndex = 1;
             // 
             // FormMain
             // 
@@ -244,6 +254,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private UI.IoDescEditorControl2 ioDescEditorControl1;
+        private UI.Views.InterfaceDescriptionEditorView interfaceDescriptionEditorView1;
     }
 }
 

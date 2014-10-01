@@ -1,6 +1,6 @@
-﻿namespace ExplorIO.UI
+﻿namespace ExplorIO.UI.Controls
 {
-    partial class IoByteControl
+    partial class TileGridControl
     {
         /// <summary> 
         /// Erforderliche Designervariable.
@@ -28,36 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.flowLayoutPanelBits = new System.Windows.Forms.FlowLayoutPanel();
+            this.vScrollBar = new System.Windows.Forms.VScrollBar();
             this.SuspendLayout();
             // 
-            // flowLayoutPanelBits
+            // vScrollBar
             // 
-            this.flowLayoutPanelBits.AllowDrop = true;
-            this.flowLayoutPanelBits.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.flowLayoutPanelBits.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanelBits.Location = new System.Drawing.Point(4, 2);
-            this.flowLayoutPanelBits.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanelBits.Name = "flowLayoutPanelBits";
-            this.flowLayoutPanelBits.Size = new System.Drawing.Size(736, 92);
-            this.flowLayoutPanelBits.TabIndex = 0;
+            this.vScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.vScrollBar.Location = new System.Drawing.Point(746, 0);
+            this.vScrollBar.Name = "vScrollBar";
+            this.vScrollBar.Size = new System.Drawing.Size(17, 562);
+            this.vScrollBar.TabIndex = 0;
+            this.vScrollBar.Visible = false;
             // 
-            // IoByteControl
+            // IoInterfaceGrid
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.Controls.Add(this.flowLayoutPanelBits);
+            this.Controls.Add(this.vScrollBar);
             this.DoubleBuffered = true;
-            this.Name = "IoByteControl";
-            this.Padding = new System.Windows.Forms.Padding(4, 2, 15, 2);
-            this.Size = new System.Drawing.Size(755, 96);
+            this.Name = "IoInterfaceGrid";
+            this.Size = new System.Drawing.Size(763, 562);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelBits;
+        private System.Windows.Forms.VScrollBar vScrollBar;
     }
 }

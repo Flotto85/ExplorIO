@@ -107,10 +107,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExplorIO.Core\ExplorIO.Core.csproj">
-      <Project>{C1944B34-3D52-43E3-88BD-2F8FB80496FB}</Project>
-      <Name>ExplorIO.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ExplorIO.Data\ExplorIO.Data.csproj">
       <Project>{9B1D69FF-169E-4CCE-88A0-12A736F9D4A4}</Project>
       <Name>ExplorIO.Data</Name>
